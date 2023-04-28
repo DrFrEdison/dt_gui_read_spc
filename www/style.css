@@ -1,17 +1,20 @@
-/* Get a fancy font from Google Fonts */
-  @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
+/* Get a fancy font from Google Fonts 
+  @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap'); */
 
 body {
-  background-color: black;
-  color: white; /* text color */
+  background-color: white;
+  color: black; /* text color */
 }
 
 /* Change header text to imported font */
   h2 {
-    font-family: 'Yusei Magic', sans-serif;
+    font-family: 'Eurostile Next LT Pro', cairo;
   }
 
 /* Make text visible on inputs */
   .shiny-input-container {
-    color: #474747;
+    color: #74747;
   }
+  
+  
+  /* Eurostile Next LT Pro */

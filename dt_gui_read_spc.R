@@ -4,6 +4,8 @@ library(hyperSpec)
 library(htmlwidgets)
 
 source("read_spc.R")
+
+options(shiny.maxRequestSize=10*1024^2)
 # Define the UI
 ui <- fluidPage(
   
@@ -19,7 +21,7 @@ ui <- fluidPage(
               , ""
               , multiple = T
               , accept = ".spc"
-              , buttonLabel = paste0("Suche .spc-Dateien oder Drag & Drop")
+              , buttonLabel = paste0("Browse oder drag & drop .spc-Dateien")
               , placeholder = NA
               , width = "25%")
     
@@ -43,7 +45,8 @@ ui <- fluidPage(
                 ),
                 tabPanel("App-Info"
                          , br()
-                         , "lala"
+                         , paste0("DT:Spec - Lese und plotte .spc-Dateien,", br(), 
+                         "Version: V0.0.1-")
                          , br()
                 )
     )
