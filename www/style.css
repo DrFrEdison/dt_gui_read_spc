@@ -9,6 +9,7 @@ body {
 /* Change header text to imported font */
   h2 {
     font-family: 'Eurostile Next LT Pro', cairo;
+    color: #74747;
   }
 
 /* Make text visible on inputs */

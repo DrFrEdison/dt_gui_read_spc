@@ -2,8 +2,9 @@ library(shiny)
 library(plotly)
 library(hyperSpec)
 library(htmlwidgets)
-
+library(markdown)
 source("read_spc.R")
+source("dotspc_names.R")
 
 options(shiny.maxRequestSize=10*1024^2)
 # Define the UI
@@ -13,22 +14,22 @@ ui <- fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
   ),
   
-  titlePanel(title=div(img(src="dt_logo.png", height="5%", width="5%"), "DT:Spec - Graphische Darstellung von Spektren")
-             , windowTitle = "DT:Spec")
+  titlePanel(title=div(img(src="dt_logo.png", height="5%", width="5%"), "DT:GUI_READ_SPC - Graphische Darstellung von Spektren")
+             , windowTitle = "DT:GUI_READ_SPC")
   
   , sidebarPanel(
     fileInput("file_upload"
               , ""
               , multiple = T
               , accept = ".spc"
-              , buttonLabel = paste0("Browse oder drag & drop .spc-Dateien")
+              , buttonLabel = paste0(".spc-Dateien")
               , placeholder = NA
-              , width = "25%")
+              , width = "100%")
     
-    , downloadButton("download_spc", "Absorptionsspektren als .html herunterladen")
-    , downloadButton("download_ref", "Referenzspektren als .html herunterladen")
-    , downloadButton("download_drk", "Dunkelwertspektren als .html herunterladen")
-    , downloadButton("download_trans", "Transmissionsspektren als .html herunterladen")
+    , downloadButton("download_spc", "Absorptionsspektren")
+    , downloadButton("download_ref", "Referenzspektren")
+    , downloadButton("download_drk", "Dunkelwertspektren")
+    , downloadButton("download_trans", "Transmissionsspektren")
     
     , width = 2)
   
@@ -43,12 +44,32 @@ ui <- fluidPage(
                          , plotlyOutput("plot_trans", width = "90%", height = "70%"), br()
                          , br()
                 ),
-                tabPanel("App-Info"
-                         , br()
-                         , paste0("DT:Spec - Lese und plotte .spc-Dateien,", br(), 
-                         "Version: V0.0.1-")
-                         , br()
+                
+                tabPanel("Über",
+                         fluidRow(
+                           column(6,
+                                  includeMarkdown("about.Rmd")# Markdown("about.md")
+                           )
+                         )
                 )
+                
+                # ,
+                #            column(3,
+                #                   img(class="img-polaroid",
+                #                       src=paste0("http://upload.wikimedia.org/",
+                #                                  "wikipedia/commons/9/92/",
+                #                                  "1919_Ford_Model_T_Highboy_Coupe.jpg")),
+                #                   tags$small(
+                #                     "Source: Photographed at the Bay State Antique ",
+                #                     "Automobile Club's July 10, 2005 show at the ",
+                #                     "Endicott Estate in Dedham, MA by ",
+                #                     a(href="http://commons.wikimedia.org/wiki/User:Sfoskett",
+                #                       "User:Sfoskett")
+                #                   )
+                #            )
+                #          )
+                # )
+                
     )
   )
 )

@@ -256,9 +256,15 @@ read_spc_files <- function(directory
       for(i in 1:length(ref$files)){
         plotly_ref <- plotly_ref%>% plotly::add_trace(
           x=as.numeric(ref$wl[[i]]),y=as.numeric(ref$spc[[i]]),type="scatter", mode="lines",line=list(width=plotlyp$widthp,color=colp[i]),
-          name= ref$filestextlegend[ i ],
+          name= dotspc_names(
+            substr(ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ]
+                   , 1 + gregexpr("\\\\", ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ])[[ 1 ]] )]
+                   , nchar( ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ]))
+          ),
           text=paste("Time",ref$data[[i]][1,grep("fdate",names(ref$data[[i]]))],
-                     "<br>File",basename(unlist(ref$filestext[[i]])),
+                     "<br>File",substr(ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ]
+                                       , 1 + gregexpr("\\\\", ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ])[[ 1 ]] )]
+                                       , nchar( ref$data[[i]][1,grep("^NAME$",names(ref$data[[i]]))][ 1 ])),
                      "<br>Iteration",ref$data[[i]][1,grep("It",names(ref$data[[i]]))[1]],
                      "<br>Average",ref$data[[i]][1,grep("Aver",names(ref$data[[i]]))])
         )}
@@ -274,9 +280,15 @@ read_spc_files <- function(directory
       for(i in 1:length(drk$files)){
         plotly_drk <- plotly_drk%>% plotly::add_trace(
           x=as.numeric(drk$wl[[i]]),y=as.numeric(drk$spc[[i]]),type="scatter", mode="lines",line=list(width=plotlyp$widthp,color=colp[i]),
-          name= drk$filestextlegend[ i ],
+          name= dotspc_names(
+            substr(drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ]
+                   , 1 + gregexpr("\\\\", drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ])[[ 1 ]] )]
+                   , nchar( drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ]))
+          ),
           text=paste("Time",drk$data[[i]][1,grep("fdate",names(drk$data[[i]]))],
-                     "<br>File",basename(unlist(drk$files[[i]])),
+                     "<br>File",substr(drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ]
+                                       , 1 + gregexpr("\\\\", drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ])[[ 1 ]] )]
+                                       , nchar( drk$data[[i]][1,grep("^NAME$",names(drk$data[[i]]))][ 1 ])),
                      "<br>Iteration",drk$data[[i]][1,grep("It",names(drk$data[[i]]))[1]],
                      "<br>Average",drk$data[[i]][1,grep("Aver",names(drk$data[[i]]))])
         )}
@@ -294,9 +306,15 @@ read_spc_files <- function(directory
         if(length(spc$spc[[i]])>0)  for(j in 1:ncol(spc$spc[[i]])){
           plotly_spc <- plotly_spc %>% plotly::add_trace(
             x=as.numeric(spc$wl[[i]][,j]),y=as.numeric(spc$spc[[i]][,j]),type="scatter", mode="lines",line=list(width=plotlyp$widthp,color=colp[i]),
-            name= spc$filextextlegend[ i ],
+            name= dotspc_names(
+              substr(spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]
+                     , 1 + gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]] )]
+                     , nchar( spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]))
+            ),
             text=paste("Time",spc$data[[i]][1,grep("fdate",names(spc$data[[i]]))],
-                       "<br>File",basename(unlist(spc$filestext[ i ] )),
+                       "<br>File",substr(spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]
+                                         , 1 + gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]] )]
+                                         , nchar( spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])),
                        "<br>Iteration",spc$data[[i]][1,grep("It",names(spc$data[[i]]))[1]],
                        "<br>Average",spc$data[[i]][1,grep("Aver",names(spc$data[[i]]))])
           )
@@ -315,9 +333,15 @@ read_spc_files <- function(directory
           if(length(spc$spc_baseline[[i]])>0)  for(j in 1:ncol(spc$spc_baseline[[i]])){
             plotly_spc <- plotly_spc%>% plotly::add_trace(
               x=as.numeric(spc$wl[[i]][,j]),y=as.numeric(spc$spc_baseline[[i]][,j]),type="scatter", mode="lines",line=list(width=plotlyp$widthp,color=colp[i]),
-              name= spc$filextextlegend[ i ],
+              name= dotspc_names(
+                substr(spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]
+                       , 1 + gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]] )]
+                       , nchar( spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]))
+              ),
               text=paste("Time",spc$data[[i]][1,grep("fdate",names(spc$data[[i]]))],
-                         "<br>File",basename(unlist(spc$filestext[ i ] )),
+                         "<br>File",substr(spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ]
+                                           , 1 + gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])[[ 1 ]] )]
+                                           , nchar( spc$data[[i]][1,grep("^NAME$",names(spc$data[[i]]))][ 1 ])),
                          "<br>Iteration",spc$data[[i]][1,grep("It",names(spc$data[[i]]))[1]],
                          "<br>Average",spc$data[[i]][1,grep("Aver",names(spc$data[[i]]))])
             )
@@ -336,9 +360,15 @@ read_spc_files <- function(directory
         if(length(trans$spc[[i]])>0)  for(j in 1:ncol(trans$spc[[i]])){
           plotly_trans <- plotly_trans%>% plotly::add_trace(
             x=as.numeric(trans$wl[[i]][,j]),y=as.numeric(trans$spc[[i]][,j]),type="scatter", mode="lines",line=list(width=plotlyp$widthp,color=colp[i]),
-            name= trans$filestextlegend[ i ],
+            name= dotspc_names(
+              substr(trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ]
+                     , 1 + gregexpr("\\\\", trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ])[[ 1 ]] )]
+                     , nchar( trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ]))
+            ),
             text=paste("Time",trans$data[[i]][1,grep("fdate",names(trans$data[[i]]))],
-                       "<br>File",basename(unlist(trans$filestext[ i ] )),
+                       "<br>File",substr(trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ]
+                                         , 1 + gregexpr("\\\\", trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ])[[ 1 ]] )]
+                                         , nchar( trans$data[[i]][1,grep("^NAME$",names(trans$data[[i]]))][ 1 ])),
                        "<br>Iteration",trans$data[[i]][1,grep("It",names(trans$data[[i]]))],
                        "<br>Average",trans$data[[i]][1,grep("Aver",names(trans$data[[i]]))])
           )
