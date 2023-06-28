@@ -1,0 +1,15 @@
+---
+title: "About"
+author: "MK"
+date: "`r Sys.Date()`"
+mainfont: Eurostile Next LT Pro
+output: html_document
+---
+
+### <span style="color:#2f407a"> Versionsverlauf </span>
+
+<span style="color:#2f407a"> *V0.0.2* - </span>
+<span style="color:#2f407a"> *2023-06-28:* Hinzufügen von .csv Dateien</span>
+<br>
+<span style="color:#2f407a"> *V0.0.1* - </span>
+<span style="color:#2f407a"> *2023-05-05:* Projekt Initialisierung</span>

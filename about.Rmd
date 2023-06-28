@@ -9,12 +9,9 @@ output: html_document
 ### <span style="color:#2f407a"> DT:GUI_READ_SPC - Lese und plotte .spc-Dateien </span>
 
 
-* <span style="color:#2f407a"> Ziehe .spc Dateien auf die Schaltfläche **.spc-Dateien** oder Durchsuche den Computer durch klicken auf diese Schaltfläche. DT:Spec wird die Spektren aufgeschlüsselt nach Spektrentyp plotten. </span>
+* <span style="color:#2f407a"> Ziehe .spc oder .csv Dateien auf die Schaltfläche **.spc/csv-Dateien** oder Durchsuche den Computer durch klicken auf diese Schaltfläche. DT:Spec wird die Spektren aufgeschlüsselt nach Spektrentyp plotten. </span>
 
 * <span style="color:#2f407a"> Über die Download-Funktion in der Seitenleiste können die Abbildungen heruntergeladen werden. </span>
 
 * <span style="color:#2f407a"> Beim fahren mit der Maus über die Spektren erscheint das Datum, die Integrationszeit und die Mittelungen des Spektrums. </span>  
 * <span style="color:#2f407a"> Spektren können über die Legende ausgewählt werden. Doppelklick auf ein Spektrum in der Legende isoliert es, erneuter Doppelklick lässt alle Spektren wieder erscheinen. </span>
-
-<span style="color:#2f407a"> *Version: V0.0.1* </span>
-<span style="color:#2f407a"> *2023-05-05* </span>

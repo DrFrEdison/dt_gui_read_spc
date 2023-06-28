@@ -3,8 +3,10 @@ library(plotly)
 library(hyperSpec)
 library(htmlwidgets)
 library(markdown)
+library(data.table)
 source("read_spc.R")
 source("dotspc_names.R")
+source("transfer_csv.R")
 
 options(shiny.maxRequestSize=10*1024^2)
 # Define the UI
@@ -22,7 +24,7 @@ ui <- fluidPage(
               , ""
               , multiple = T
               , accept = ".spc"
-              , buttonLabel = paste0(".spc-Dateien")
+              , buttonLabel = paste0(".spc/csv-Dateien")
               , placeholder = NA
               , width = "100%")
     
@@ -36,9 +38,9 @@ ui <- fluidPage(
   , mainPanel(
     
     tabsetPanel(type = "tabs",
-                tabPanel("Plot .spc"
+                tabPanel("Spektren plotten"
                          , br()
-                         , plotlyOutput("plot_spc", width = "90%", height = "70%"), br()
+                         , plotlyOutput("plot_spc", width = "90%", height = "100%"), br()
                          , plotlyOutput("plot_ref", width = "90%", height = "70%"), br()
                          , plotlyOutput("plot_drk", width = "90%", height = "70%"), br()
                          , plotlyOutput("plot_trans", width = "90%", height = "70%"), br()
@@ -49,6 +51,22 @@ ui <- fluidPage(
                          fluidRow(
                            column(6,
                                   includeMarkdown("about.Rmd")# Markdown("about.md")
+                           )
+                         )
+                ),
+                
+                tabPanel("Versionsverlauf",
+                         fluidRow(
+                           column(6,
+                                  includeMarkdown("Version.Rmd")# Markdown("about.md")
+                           )
+                         )
+                ),
+                
+                tabPanel("Github",
+                         fluidRow(
+                           column(6,
+                                  includeMarkdown("Github.Rmd")# Markdown("about.md")
                            )
                          )
                 )
