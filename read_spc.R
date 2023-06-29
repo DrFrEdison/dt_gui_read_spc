@@ -522,7 +522,7 @@ read_spc_files <- function(directory
       plotlyp$spc <- list(yp = list(title = "AU",showline=T,showgrid=F,mirror=T,range=c(round(range(unlist(drk$spc))[1]*0.975,-1),round(range(unlist(drk$spc))[2]*1.025,-1)),ticks = "outside"),
                           xp = list(title = "lambda in nm",showline=T,showgrid=F,mirror=T,ticks = "outside",range=c(round(range(unlist(drk$wl))[1]*0.975,-1),round(range(unlist(drk$wl))[2]*1.025,-1))))
       
-      plotly_drk <- plot_ly(type = "scatter", mode = "lines") %>% layout(yaxis=plotlyp$drk$yp, xaxis=plotlyp$drk$xp,font=list(size=plotlyp$sizep), title = "Absorptionsspektren")
+      plotly_drk <- plot_ly(type = "scatter", mode = "lines") %>% layout(yaxis=plotlyp$drk$yp, xaxis=plotlyp$drk$xp,font=list(size=plotlyp$sizep), title = "Dunkelwertspektren")
       
       for(i in 1:length(drk$files)){
         if(length(drk$spc[[ i ]])>0)  for(j in 1 : ncol(drk$spc[[ i ]])){
@@ -639,7 +639,7 @@ read_spc_files <- function(directory
       plotlyp$spc <- list(yp = list(title = "AU",showline=T,showgrid=F,mirror=T,range=c(round(range(unlist(trans$spc))[1]*0.975,-1),round(range(unlist(trans$spc))[2]*1.025,-1)),ticks = "outside"),
                           xp = list(title = "lambda in nm",showline=T,showgrid=F,mirror=T,ticks = "outside",range=c(round(range(unlist(trans$wl))[1]*0.975,-1),round(range(unlist(trans$wl))[2]*1.025,-1))))
       
-      plotly_trans <- plot_ly(type = "scatter", mode = "lines") %>% layout(yaxis=plotlyp$trans$yp, xaxis=plotlyp$trans$xp,font=list(size=plotlyp$sizep), title = "Absorptionsspektren")
+      plotly_trans <- plot_ly(type = "scatter", mode = "lines") %>% layout(yaxis=plotlyp$trans$yp, xaxis=plotlyp$trans$xp,font=list(size=plotlyp$sizep), title = "Transmissionsspektren")
       
       for(i in 1:length(trans$files)){
         if(length(trans$spc[[ i ]])>0)  for(j in 1 : ncol(trans$spc[[ i ]])){

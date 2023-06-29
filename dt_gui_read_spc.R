@@ -154,13 +154,37 @@ server <- function(input, output) {
   
   output$plot_trans <- renderPlotly({plot_upload()$trans})
   
-  # output$download <- downloadHandler(
-  #   filename = "data.csv",
-  #   content = function(file) {
-  #     readr::write_csv(data(), file)
-  #   }
-  # )
-  # 
+  output$download_spc_html <- downloadHandler(
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_spc.html"),
+    
+    content = function(file = filename) {
+      saveWidget( plot_upload()$spc, file, selfcontained = TRUE)
+    }
+  )
+  
+  output$download_ref_html <- downloadHandler(
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_ref.html"),
+    
+    content = function(file = filename) {
+      saveWidget( plot_upload()$ref, file, selfcontained = TRUE)
+    }
+  )
+      
+  output$download_drk_html <- downloadHandler(
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_drk.html"),
+    
+    content = function(file = filename) {
+      saveWidget( plot_upload()$drk, file, selfcontained = TRUE)
+    }
+  )
+  
+  output$download_trans_html <- downloadHandler(
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_trans.html"),
+    
+    content = function(file = filename) {
+      saveWidget( plot_upload()$trans, file, selfcontained = TRUE)
+    }
+  )
   
   output$download_spc_csv <- downloadHandler( 
     filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_spc.csv")
