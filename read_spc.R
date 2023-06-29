@@ -5,6 +5,7 @@ read_spc_files <- function(directory
                            , exportplot = F
                            , recursive = F
                            , colp = NA
+                           , export_to_csv = F
                            , shinyoutput  = T){
   
   # Create empty lists
@@ -673,22 +674,62 @@ read_spc_files <- function(directory
       
     }
   }
+  
+  if( export_to_csv ){
+    
+    export_csv <- list()
+    
+    if( length( spc ) != 0){
+      export_csv$spc$spc <- do.call(cbind, spc$spc)
+      export_csv$spc$data <- rbindlist(lapply(spc$data, data.table), fill = T)
+      export_csv$spc$data <- export_csv$spc$data[ , grep("spc", colnames( export_csv$spc$data ), invert = T), with = F]
+      export_csv$spc$export <- data.table( export_csv$spc$data, t(export_csv$spc$spc))
+    }
+    
+    if( length( ref ) != 0){
+      export_csv$ref$spc <- do.call(cbind, ref$spc)
+      export_csv$ref$data <- rbindlist(lapply(ref$data, data.table), fill = T)
+      export_csv$ref$data <- export_csv$ref$data[ , grep("spc", colnames( export_csv$ref$data ), invert = T), with = F]
+      export_csv$ref$export <- data.table( export_csv$ref$data, t(export_csv$ref$spc))
+    }
+    
+    if( length( drk ) != 0){
+      export_csv$drk$spc <- do.call(cbind, drk$spc)
+      export_csv$drk$data <- rbindlist(lapply(drk$data, data.table), fill = T)
+      export_csv$drk$data <- export_csv$drk$data[ , grep("spc", colnames( export_csv$drk$data ), invert = T), with = F]
+      export_csv$drk$export <- data.table( export_csv$drk$data, t(export_csv$drk$spc))
+    }
+    
+    if( length( trans ) != 0){
+      export_csv$trans$spc <- do.call(cbind, trans$spc)
+      export_csv$trans$data <- rbindlist(lapply(trans$data, data.table), fill = T)
+      export_csv$trans$data <- export_csv$trans$data[ , grep("spc", colnames( export_csv$trans$data ), invert = T), with = F]
+      export_csv$trans$export <- data.table( export_csv$trans$data, t(export_csv$trans$spc))
+    }
+    
+  }
+  
   if(shinyoutput ){ returnlist <- list( if(exists("plotly_drk")) plotly_drk
                                         , if(exists("plotly_ref")) plotly_ref
                                         , if(exists("plotly_spc")) plotly_spc
-                                        , if(exists("plotly_trans")) plotly_trans)
+                                        , if(exists("plotly_trans")) plotly_trans
+                                        , if(exists("export_csv")) export_csv)
   
   returnlist <- returnlist[ unlist(lapply(returnlist, function( x ) !is.null( x ))) ]
   
   names(returnlist) <- c( if(exists("plotly_drk")) "drk"
                           ,if(exists("plotly_ref")) "ref"
                           ,if(exists("plotly_spc")) "spc"
-                          ,if(exists("plotly_trans")) "trans")
+                          ,if(exists("plotly_trans")) "trans"
+                          ,if(exists("export_csv")) "export_csv")
+  
   }
   if(!shinyoutput ){
-    returnlist <- list(drk,ref,spc,trans)
-    names(returnlist) <- c("drk","ref","spc","trans")
+    returnlist <- list(export_csv)
+    names(returnlist) <- c("export_csv")
   }
   
   return(returnlist)
 }
+
+

@@ -8,6 +8,9 @@ output: html_document
 
 ### <span style="color:#2f407a"> Versionsverlauf </span>
 
+<span style="color:#2f407a"> *V0.0.3* - </span>
+<span style="color:#2f407a"> *2023-06-29:* Hinzufügen des csv-Downloads</span>
+<br>
 <span style="color:#2f407a"> *V0.0.2* - </span>
 <span style="color:#2f407a"> *2023-06-28:* Hinzufügen von .csv Dateien</span>
 <br>

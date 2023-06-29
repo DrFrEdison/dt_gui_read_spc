@@ -28,10 +28,16 @@ ui <- fluidPage(
               , placeholder = NA
               , width = "100%")
     
-    , downloadButton("download_spc", "Absorptionsspektren")
-    , downloadButton("download_ref", "Referenzspektren")
-    , downloadButton("download_drk", "Dunkelwertspektren")
-    , downloadButton("download_trans", "Transmissionsspektren")
+    , downloadButton("download_spc_html", "Absorption als html")
+    , downloadButton("download_ref_html", "Referenzen als html")
+    , downloadButton("download_drk_html", "Dunkelwert als html")
+    , downloadButton("download_trans_html", "Transmission als html")
+    , br()
+    , br()
+    , downloadButton("download_spc_csv", "Absorption als csv")
+    , downloadButton("download_ref_csv", "Referenzen als csv")
+    , downloadButton("download_drk_csv", "Dunkelwert als csv")
+    , downloadButton("download_trans_csv", "Transmission als csv")
     
     , width = 2)
   
@@ -96,7 +102,6 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   # Read the uploaded CSV file and create the plot
-  
   uploaded_files <- reactiveValues(paths = NULL)
   
   observeEvent(input$file_upload, {
@@ -114,13 +119,31 @@ server <- function(input, output) {
                                   , pngplot = F
                                   , plotlyplot = T
                                   , recursive = F
+                                  , exportplot = F
+                                  , export_to_csv = F
                                   , colp = NA
                                   , shinyoutput  = T)
       return(plot_data)
       
-    }
-    
-  })
+    }})
+  
+  csv_download <- reactive({
+    upload_file <- uploaded_files$paths
+    if (!is.null(upload_file)) {
+      
+      csv_data <- read_spc_files(upload_file
+                                 , baseline = NA
+                                 , pngplot = F
+                                 , plotlyplot = F
+                                 , recursive = F
+                                 , exportplot = F
+                                 , export_to_csv = T
+                                 , colp = NA
+                                 , shinyoutput  = F)
+      return(csv_data)
+      
+    }})
+  
   
   # Display the plot
   output$plot_spc <- renderPlotly({plot_upload()$spc})
@@ -131,37 +154,42 @@ server <- function(input, output) {
   
   output$plot_trans <- renderPlotly({plot_upload()$trans})
   
-  output$download_spc <- downloadHandler(
-    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_spc.html"),
-    
-    content = function(file = filename) {
-      saveWidget( plot_upload()$spc, file, selfcontained = TRUE)
+  # output$download <- downloadHandler(
+  #   filename = "data.csv",
+  #   content = function(file) {
+  #     readr::write_csv(data(), file)
+  #   }
+  # )
+  # 
+  
+  output$download_spc_csv <- downloadHandler( 
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_spc.csv")
+    , content = function( file = filename){
+      fwrite( csv_download()$export_csv$spc$export, file, sep = ";", dec = "," )
     }
   )
   
-  output$download_ref <- downloadHandler(
-    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_ref.html"),
-    
-    content = function(file = filename) {
-      saveWidget( plot_upload()$ref, file, selfcontained = TRUE)
+  output$download_ref_csv <- downloadHandler( 
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_ref.csv")
+    , content = function( file = filename){
+      fwrite( csv_download()$export_csv$ref$export, file, sep = ";", dec = "," )
     }
   )
   
-  output$download_drk <- downloadHandler(
-    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_drk.html"),
-    
-    content = function(file = filename) {
-      saveWidget( plot_upload()$drk, file, selfcontained = TRUE)
+  output$download_drk_csv <- downloadHandler( 
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_drk.csv")
+    , content = function( file = filename){
+      fwrite( csv_download()$export_csv$drk$export, file, sep = ";", dec = "," )
     }
   )
   
-  output$download_trans <- downloadHandler(
-    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_trans.html"),
-    
-    content = function(file = filename) {
-      saveWidget( plot_upload()$trans, file, selfcontained = TRUE)
+  output$download_trans_csv <- downloadHandler( 
+    filename = paste0( substr(gsub("-", "", Sys.Date()), 3, 8), "_trans.csv")
+    , content = function( file = filename){
+      fwrite( csv_download()$export_csv$trans$export, file, sep = ";", dec = "," )
     }
   )
+  
 }
 
 # Run the app
