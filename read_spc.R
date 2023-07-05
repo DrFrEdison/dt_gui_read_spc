@@ -575,15 +575,19 @@ read_spc_files <- function(directory
             
             , name = if( any( tools::file_ext( directory ) != "csv")){
               dotspc_names( substr(spc$data[[ i ]][1, grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ]
+                                   
                                    , 1 + gregexpr("\\\\", spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])[[ 1 ]] )]
-                                   , nchar( spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])))} else{ name = dotspc_names( as.character( unlist( do.call(c, readcsv$filestext[ i ])[[ 1 ]][ j ]))) }
+                                   
+                                   , nchar( spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])))} else{ 
+                                     
+                                     dotspc_names( as.character( unlist( do.call(c, readcsv$filestext[ i ])[[ 1 ]][ j ]))) }
             
-            , text = paste("Datum_Uhrzeit = ", spc$data[[ i ]][1,grep("fdate|datetime", names(spc$data[[ i ]]), ignore.case = T)[ 1 ]],
+            , text = paste("Datum_Uhrzeit = ", spc$data[[ i ]][j,grep("fdate|datetime", names(spc$data[[ i ]]), ignore.case = T)[ 1 ]],
                            "<br>Dateiname = ", ifelse( length( grep("^NAME$|filename", names(spc$data[[ i ]])) ) != 0
                                                        , substr(spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ]
                                                                 , 1 + gregexpr("\\\\", spc$data[[ i ]][j,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", spc$data[[ i ]][1,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ])[[ 1 ]] )]
                                                                 , nchar( spc$data[[ i ]][j,grep("^NAME$|filename", names(spc$data[[ i ]]))][ 1 ]))
-                                                       , as.character(spc$data[[ i ]][ , 1]))
+                                                       , as.character(spc$data[[ i ]][j , 1]))
                            ,
                            "<br>Integrationszeit = ",spc$data[[ i ]][j,grep("It|integrationTime", names(spc$data[[ i ]]))[1]],
                            "<br>Mittelungen = ",spc$data[[ i ]][j,grep("Aver|accumulations", names(spc$data[[ i ]]))])
@@ -591,6 +595,8 @@ read_spc_files <- function(directory
         }
       }
       
+      plotly_spc <- plotly_spc %>% layout(showlegend = T, legend = list( font = list( size = 10)))
+      plotly_spc
       if( exportplot ) tryCatch(htmlwidgets::saveWidget(as_widget(plotly_spc),paste0(date.dt(), "_spc.html")),error=function(e){})
       
       # spc baseline
