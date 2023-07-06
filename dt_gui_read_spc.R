@@ -23,7 +23,7 @@ ui <- fluidPage(
     fileInput("file_upload"
               , ""
               , multiple = T
-              , accept = ".spc"
+              , accept = c(".csv", ".spc")
               , buttonLabel = paste0(".spc/csv-Dateien")
               , placeholder = NA
               , width = "100%")
@@ -46,10 +46,10 @@ ui <- fluidPage(
     tabsetPanel(type = "tabs",
                 tabPanel("Spektren plotten"
                          , br()
-                         , plotlyOutput("plot_spc", width = "90%", height = "100%"), br()
-                         , plotlyOutput("plot_ref", width = "90%", height = "70%"), br()
-                         , plotlyOutput("plot_drk", width = "90%", height = "70%"), br()
-                         , plotlyOutput("plot_trans", width = "90%", height = "70%"), br()
+                         , plotlyOutput("plot_spc", width = "120%", height = "120%", inline = T), br()
+                         , plotlyOutput("plot_ref", width = "120%", height = "120%"), br()
+                         , plotlyOutput("plot_drk", width = "120%", height = "120%"), br()
+                         , plotlyOutput("plot_trans", width = "120%", height = "120%"), br()
                          , br()
                 ),
                 
