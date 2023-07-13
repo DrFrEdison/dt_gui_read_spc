@@ -261,8 +261,8 @@ read_spc_files <- function(directory
   trans$filestext <- trans$filestext[which(unlist(lapply(trans$filestext, function(x) !is.null(x)))==T)]
   
   if( length( trans$spc ) > 0) for(i in 1 : length( trans$spc)){
-    trans$wldf[[ i ]] <- matrix(nrow = length( trans$wl[[ i ]] ), ncol = ncol( trans$spc[[ i ]] ))
-    for(j in 1 : ncol( trans$wldf[[ i ]] )) trans$wldf[[ i ]][ , j] <- trans$wl[[ j ]]
+    trans$wldf[[ i ]] <- matrix(nrow = nrow( trans$wl[[ i ]]), ncol = ncol( trans$spc[[ i ]] ))
+    for(j in 1 : ncol( trans$wldf[[ i ]] )) trans$wldf[[ i ]][ , j] <- trans$wl[[ i ]][,1]
     trans$wl[[ i ]] <- trans$wldf[[ i ]]
   }
   
@@ -280,10 +280,18 @@ read_spc_files <- function(directory
     options(scipen=999)
     
     for(i in 1 : length( readcsv$raw)){
-      readcsv$type[[ i ]] <- "spc"
       
       # spc files detection (count zeros at the first digit)
       if( which.max( table( substr( abs(readcsv$spc[[ i ]][1,]), 1, 1) )) == 1) readcsv$type[[ i ]] <- "spc"
+      
+      # trans files detection (All / Most Transmissions have the "." at position 3)
+      if( length( table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) == 3)) > 1) {
+        if( all( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) >= 3)) readcsv$type[[ i ]] <- "trans"
+        if( !all( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) >= 3) & readcsv$type[[ i ]] != "spc"){
+          if(table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) >= 3)[ 2 ] > 
+             table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) < 3)[ 1 ])  readcsv$type[[ i ]] <- "trans"
+        }
+      }
       
       # drk files detection (All Counts between 100 and 5000)
       if( all( readcsv$spc[[ i ]][1,] > 100 & readcsv$spc[[ i ]][1,] < 5000)) readcsv$type[[ i ]] <- "drk"
@@ -296,10 +304,7 @@ read_spc_files <- function(directory
       # ref files detection (All Counts at 200 : 290nm > 5000)
       if( all( readcsv$spc[[ i ]][1, 10 : 100] > 5000 )) readcsv$type[[ i ]] <- "ref"
       
-      # trans files detection (Most Transmissions have the "." at position 3)
-      if( length( table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) == 3)) > 1) 
-        if(table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) == 3)[ 2 ] > 
-           table( as.numeric( gregexpr("\\.", abs( readcsv$spc[[ i ]][1,] ))) == 3)[ 1 ])  readcsv$type[[ i ]] <- "trans"
+      if( nchar( readcsv$type[[ i ]] ) == 0) readcsv$type[[ i ]] <- "spc"
       
     }
     
@@ -660,8 +665,12 @@ read_spc_files <- function(directory
             
             , name = if( any( tools::file_ext( directory ) != "csv")){
               dotspc_names( substr(trans$data[[ i ]][1, grep("^NAME$|filename", names(trans$data[[ i ]]))][ 1 ]
+                                   
                                    , 1 + gregexpr("\\\\", trans$data[[ i ]][1,grep("^NAME$|filename", names(trans$data[[ i ]]))][ 1 ])[[ 1 ]][ length( gregexpr("\\\\", trans$data[[ i ]][1,grep("^NAME$|filename", names(trans$data[[ i ]]))][ 1 ])[[ 1 ]] )]
-                                   , nchar( trans$data[[ i ]][1,grep("^NAME$|filename", names(trans$data[[ i ]]))][ 1 ])))} else{ name = dotspc_names( as.character( unlist( do.call(c, readcsv$filestext[ which( unlist( readcsv$type ) == "trans")[ i ] ])[[ 1 ]][ j ]))) }
+                                   
+                                   , nchar( trans$data[[ i ]][1,grep("^NAME$|filename", names(trans$data[[ i ]]))][ 1 ])))} else{ 
+                                     
+                                     dotspc_names( as.character( unlist( do.call(c, readcsv$filestext[ i ])[[ 1 ]][ j ]))) }
             
             , text = paste("Datum_Uhrzeit = ", trans$data[[ i ]][1,grep("fdate|datetime", names(trans$data[[ i ]]), ignore.case = T)[ 1 ]],
                            "<br>Dateiname = ", ifelse( length( grep("^NAME$|filename", names(trans$data[[ i ]])) ) != 0

@@ -28,16 +28,16 @@ ui <- fluidPage(
               , placeholder = NA
               , width = "100%")
     
-    , downloadButton("download_spc_html", "Absorption als html")
-    , downloadButton("download_ref_html", "Referenzen als html")
-    , downloadButton("download_drk_html", "Dunkelwert als html")
-    , downloadButton("download_trans_html", "Transmission als html")
+    , downloadButton("download_spc_html", "Absorption .html", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_ref_html", "Referenzen .html", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_drk_html", "Dunkelwert .html", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_trans_html", "Transmission .html", icon = shiny::icon("file-arrow-down"))
     , br()
     , br()
-    , downloadButton("download_spc_csv", "Absorption als csv")
-    , downloadButton("download_ref_csv", "Referenzen als csv")
-    , downloadButton("download_drk_csv", "Dunkelwert als csv")
-    , downloadButton("download_trans_csv", "Transmission als csv")
+    , downloadButton("download_spc_csv", "Absorption .csv", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_ref_csv", "Referenzen .csv", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_drk_csv", "Dunkelwert .csv", icon = shiny::icon("file-arrow-down"))
+    , downloadButton("download_trans_csv", "Transmission .csv", icon = shiny::icon("file-arrow-down"))
     
     , width = 2)
   
