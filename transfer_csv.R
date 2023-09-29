@@ -18,6 +18,7 @@ transfer_csv <- function(csv.file # input csv file
   library(prospectr)
   library(data.table)
   if(!is.data.table(csv.file)) data.table.set = F
+
   # extract spectra columns by searching for numeric column names and number > 100
   numcol <- suppressWarnings(as.numeric(gsub("X", "",  colnames(csv.file))))
   if(!data.table.set) csv.file.spc.spc <- csv.file[ , suppressWarnings(which( !is.na(numcol) & numcol > 100))]
@@ -25,6 +26,9 @@ transfer_csv <- function(csv.file # input csv file
 
   # Extract wavelengths
   wavelength <-  numcol[suppressWarnings(which( !is.na(numcol) & numcol > 100))]
+
+  # homogenize column names
+  colnames(csv.file.spc.spc) <- paste0("X", wavelength)
 
   # extract data columns by excluding numeric column names or number < 100
   if(!data.table.set) csv.file.data <- csv.file[ , suppressWarnings(which( is.na(numcol) | numcol < 100))]
@@ -42,8 +46,6 @@ transfer_csv <- function(csv.file # input csv file
   colnames( csv.file.spc.spc ) <- paste0("X", wavelength)
   csv.file.spc.spc <- data.table(csv.file.spc.spc)
   # first derivative
-
-
   if("1st" %in% derivative){
 
     csv.file.spc.1st <- copy(csv.file.spc.spc)
@@ -58,37 +60,31 @@ transfer_csv <- function(csv.file # input csv file
                               , csv.file.spc.1st
                               , xmatrix)
 
-    csv.file.spc.1st <- data.table(csv.file.spc.1st)
+    if(ncol(csv.file.spc.1st) != length( wavelength)) csv.file.spc.1st <- t(csv.file.spc.1st)
+    colnames(csv.file.spc.1st) <- colnames(csv.file.spc.spc)
 
-    #
-    # if(!is.data.table( csv.file.spc.1st ))
-    #   csv.file.spc.1st <- apply(t(csv.file.spc.1st),2,
-    #                             function(x) savitzkyGolay(X = x, m = 1, p = p, w = n1))
-    #
-    # if(is.data.table( csv.file.spc.1st )){
-    #
-    #
-    #   csv.file.spc.1st[ ,( colnames( csv.file.spc.1st ) ) := asplit( apply(.SD, 1
-    #                                                                        , function(x) savitzkyGolay(X = x, m = 1, p = p, w = n1) ),1)
-    #                     , .SDcols= colnames( csv.file.spc.1st ) ]}
+    csv.file.spc.1st <- data.table(csv.file.spc.1st)
   }
 
   #2nd derivative
-
   if("2nd" %in% derivative){
 
     csv.file.spc.2nd <- copy(csv.file.spc.spc)
     # make columns numeric
     if(!any(apply(csv.file.spc.2nd, 2, is.numeric)))  csv.file.spc.2nd <- apply(csv.file.spc.2nd , 2, function(x) as.numeric(as.character(x)))
 
-      csv.file.spc.2nd <- apply(t(csv.file.spc.2nd),2,
-                                function(x) savitzkyGolay(X = x, m = 2, p = p, w = n2))
+    csv.file.spc.2nd <- apply(t(csv.file.spc.2nd),2,
+                              function(x) savitzkyGolay(X = x, m = 2, p = p, w = n2))
 
-      csv.file.spc.2nd <- rbind(xmatrix <- matrix(data = 0, nrow = (n2 - 1) / 2, ncol = ncol(csv.file.spc.2nd))
-                                , csv.file.spc.2nd
-                                , xmatrix)
+    csv.file.spc.2nd <- rbind(xmatrix <- matrix(data = 0, nrow = (n2 - 1) / 2, ncol = ncol(csv.file.spc.2nd))
+                              , csv.file.spc.2nd
+                              , xmatrix)
 
-      csv.file.spc.2nd <- data.table(csv.file.spc.2nd)
+    if(ncol(csv.file.spc.2nd) != length( wavelength)) csv.file.spc.2nd <- t(csv.file.spc.2nd)
+
+    colnames(csv.file.spc.2nd) <- colnames(csv.file.spc.spc)
+
+    csv.file.spc.2nd <- data.table(csv.file.spc.2nd)
 
   }
 
@@ -101,14 +97,6 @@ transfer_csv <- function(csv.file # input csv file
     if("1st" %in% derivative) csv.file.spc.1st <- t(csv.file.spc.1st)
     if("2nd" %in% derivative) csv.file.spc.2nd <- t(csv.file.spc.2nd)
   }
-
-  if("1st" %in% derivative) if(ncol(csv.file.spc.1st) != length( wavelength)) csv.file.spc.1st <- t(csv.file.spc.1st)
-  if("2nd" %in% derivative) if(ncol(csv.file.spc.2nd) != length( wavelength)) csv.file.spc.2nd <- t(csv.file.spc.2nd)
-  # homogenize column names
-  colnames(csv.file.spc.spc) <- paste0("X", wavelength)
-  if("1st" %in% derivative) colnames(csv.file.spc.1st) <- colnames(csv.file.spc.spc)
-  if("2nd" %in% derivative) colnames(csv.file.spc.2nd) <- colnames(csv.file.spc.spc)
-
 
   # make columns numeric
   if(nrow( csv.file.data ) > 1)
@@ -123,15 +111,15 @@ transfer_csv <- function(csv.file # input csv file
     }
 
   # name list
-  if("1st" %in% derivative & "2nd" %in% derivative)  csv.filelist <- list(csv.file.data, wavelength, csv.file.spc.spc, csv.file.spc.1st, csv.file.spc.2nd)
-  if("1st" %in% derivative & !"2nd" %in% derivative) csv.filelist <- list(csv.file.data, wavelength, csv.file.spc.spc, csv.file.spc.1st)
-  if(!"1st" %in% derivative & "2nd" %in% derivative) csv.filelist <- list(csv.file.data, wavelength, csv.file.spc.spc, csv.file.spc.1st, csv.file.spc.2nd)
-  if( all( is.na(derivative)) ) csv.filelist <- list(csv.file.data, wavelength, csv.file.spc.spc)
+  if("1st" %in% derivative & "2nd" %in% derivative)  csv.filelist <- list(csv.file.data, csv.file.spc.spc, csv.file.spc.1st, csv.file.spc.2nd, wavelength)
+  if("1st" %in% derivative & !"2nd" %in% derivative) csv.filelist <- list(csv.file.data, csv.file.spc.spc, csv.file.spc.1st, wavelength)
+  if(!"1st" %in% derivative & "2nd" %in% derivative) csv.filelist <- list(csv.file.data, csv.file.spc.spc, csv.file.spc.1st, csv.file.spc.2nd, wavelength)
+  if( all( is.na(derivative)) ) csv.filelist <- list(csv.file.data, csv.file.spc.spc, wavelength)
 
-  if("1st" %in% derivative & "2nd" %in% derivative)  names( csv.filelist ) <- c("data", "wl", "spc", "spc1st", "spc2nd")
-  if("1st" %in% derivative & !"2nd" %in% derivative) names( csv.filelist ) <- c("data", "wl", "spc", "spc1st")
-  if(!"1st" %in% derivative & "2nd" %in% derivative) names( csv.filelist ) <- c("data", "wl", "spc", "spc2nd")
-  if( all( is.na(derivative)) ) names( csv.filelist ) <- c("data", "wl", "spc")
+  if("1st" %in% derivative & "2nd" %in% derivative)  names( csv.filelist ) <- c("data", "spc", "spc1st", "spc2nd", "wl")
+  if("1st" %in% derivative & !"2nd" %in% derivative) names( csv.filelist ) <- c("data", "spc", "spc1st", "wl")
+  if(!"1st" %in% derivative & "2nd" %in% derivative) names( csv.filelist ) <- c("data", "spc", "spc2nd", "wl")
+  if( all( is.na(derivative)) ) names( csv.filelist ) <- c("data", "spc", "wl")
 
   return(csv.filelist)
 }

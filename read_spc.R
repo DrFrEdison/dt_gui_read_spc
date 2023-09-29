@@ -48,6 +48,7 @@ read_spc_files <- function(directory
   # read spc files ####
   spcfiles$files <- as.list(spcfiles$files)
   
+  message( spcfiles$files )
   if( any( tools::file_ext( directory ) != "csv"))
     try(
       suppressWarnings( spcfiles$raw <- lapply(spcfiles$files,function(x) read.spc(x,keys.hdr2data = T, keys.log2data = T, log.txt = TRUE,log.bin = FALSE)))
@@ -472,6 +473,7 @@ read_spc_files <- function(directory
   # plotly plot ####
   if(plotlyplot==T){
     
+    message( drk$wl )
     # setwd(file.path(Sys.getenv("USERPROFILE"),"Desktop"))
     
     plotlyp <- list()
@@ -524,7 +526,7 @@ read_spc_files <- function(directory
     
     # drk
     if( exists("nullvecdrk")) if(length(nullvecdrk)>0){
-      plotlyp$spc <- list(yp = list(title = "AU",showline=T,showgrid=F,mirror=T,range=c(round(range(unlist(drk$spc))[1]*0.975,-1),round(range(unlist(drk$spc))[2]*1.025,-1)),ticks = "outside"),
+      plotlyp$drk <- list(yp = list(title = "AU",showline=T,showgrid=F,mirror=T,range=c(round(range(unlist(drk$spc))[1]*0.975,-1),round(range(unlist(drk$spc))[2]*1.025,-1)),ticks = "outside"),
                           xp = list(title = "lambda in nm",showline=T,showgrid=F,mirror=T,ticks = "outside",range=c(round(range(unlist(drk$wl))[1]*0.975,-1),round(range(unlist(drk$wl))[2]*1.025,-1))))
       
       plotly_drk <- plot_ly(type = "scatter", mode = "lines") %>% layout(yaxis=plotlyp$drk$yp, xaxis=plotlyp$drk$xp,font=list(size=plotlyp$sizep), title = "Dunkelwertspektren")
